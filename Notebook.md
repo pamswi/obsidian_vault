@@ -1318,11 +1318,288 @@ pytest factorial_test.py --cov=applications.factorial --cov-report html
 
 ```
 
+
 # Week 4
 
-## Day 1
-## Day 2
-## Day 3
-## Day 4
-## Day 5
+## Day 1 Python continued
+
+### documentation pydoc
+is useful, not as important as working code but still key
+
+```Python
+if __name__ == '__main__'
+```
+A Python programme uses the condition if __name__ == '__main__' **to only run the code inside the if statement when the program is run directly by the Python interpreter**. The code inside the if statement is not executed when the file's code is imported as a module.
+
+- overview of what the function is doing
+- dependencies / config / environment variable 
+- what goes into the function(type) vs what comes out (type)/ input vs output
+
+duck typing -> Duck Typing is **a term commonly related to dynamically typed programming languages and polymorphism**. The idea behind this principle is that the code itself does not care about whether an object is a duck, but instead it does only care about whether it quacks.
+
+Python is a duck typing language. It means **the data types of variables can change as long as the syntax is compatible**. Python is also a dynamic programming language. Meaning we can change the program while it runs, including defining new functions and the scope of the name resolution.
+
+```Python
+def factorial(x: int) -> int: # documentation tells users that int should be given and that the function will return an int
+	'''
+	factorial(x): returns the product of all of the integers from 1 to x inclusive
+	'''
+	result = 1
+	for i in range(2, x+1):
+		result *= i
+	return result
+if __name__ == '__main__': # only run statements when we run the file directly, used in pydoc and Flask; we don't want pydoc to execute the code 
+	print(factorial(3))
+	print(factorial(5))
+# __doc__attribute
+```
+
+`__doc__attribute` -> The __doc__ attribute **denotes the documentation string (docstring) line written in a module code**. Consider the the following script is saved as greet.py module. The __doc__ attribute will return a string defined at the beginning of the module code.
+
+built-in pydoc module to generate documentation when we write code:
+1. import the module within the directory (python interpreter)
+2. run the below
+```
+python3 -m pydoc -w doc_example # to generate a html documentation overview
+```
+
+### GUI (tkinter)
+terminal based apps are ok, but sometimes you will need a GUI graphical user interface
+to enable GUI there is a built-in function
+```Python
+# imports tkinter module to create GUI interface
+import tkinter
+
+def strip_vowels():
+
+    global label
+    label.destroy()
+    string = input1.get()
+    label = tkinter.Label(root, text = ''.join(char for char in string if char not in 'aeiouAEIOU'))
+    label.grid(row=2,column=1)
+  
+# initialises window
+
+root = tkinter.Tk()
+
+label = tkinter.Label(root, text = "Hello World!")
+input1 = tkinter.Entry(root)
+input1.grid(row=1, column=1) # or label.pack() if you dont want to specify location
+
+submit = tkinter.Button(root, text = "strip vowels", command=strip_vowels)
+submit.grid(row=1, column=2)
+
+# displays window
+
+if __name__ == '__main__':
+    root.mainloop()
+
+```
+tkinter module -> Tkinter is **the standard GUI library for Python**. Python when combined with Tkinter provides a fast and easy way to create GUI applications. Tkinter provides a powerful object-oriented interface to the Tk GUI toolkit.
+
+
+### [magic methods (aka dunder methods)](https://www.tutorialsteacher.com/python/magic-methods-in-python#:~:text=Python%20%2D%20Magic%20or%20Dunder%20Methods,class%20on%20a%20certain%20action.)
+
+Magic methods in Python are the special methods that start and end with the double underscores. They are also called dunder methods. Magic methods are not meant to be invoked directly by you, but the invocation happens internally from the class on a certain action.
+
+- `__init__ ` **The Default __init__ Constructor** Constructors are used to initializing the object’s state. The task of constructors is to initialize(assign values) to the data members of the class when an object of the class is created. Like methods, a constructor also contains a collection of statements(i.e. instructions) that are executed at the time of Object creation. It is run as soon as an object of a class is instantiated. The method is useful to do any initialization you want to do with your object.
+- built-in conversions
+	`__str__(self)` The python __str__ method **returns the object representation in a string format**. This method is supposed to return a human-readable format which is used to display some information about the object.
+- `__add__`  Python __add__() function is one of the magic methods in Python that returns a new object(third) i.e. the addition of the other two objects. It implements the addition operator “+” in Python.
+	```Python
+def __add__(self, dog2):
+	return Dog(self.name+dog2.name, self.age+dog2.age, self.breed+dog2.breed)
+```
+- `__repr__` Python __repr__() is one of the magic methods that returns a printable representation of an object in Python that can be customized or predefined, i.e. we can also create the string representation of the object according to our needs.
+	```Python
+def __repr__(self):
+	return f"Dog('{self.name}',{self.age}, {self.breed}')"
+```
+
+
+## Day 2 practice day
+
+[https://github.com/agray998/qa-assessment-example-2](https://github.com/agray998/qa-assessment-example-2 "https://github.com/agray998/qa-assessment-example-2")  
+[https://github.com/agray998/qa-assessment-example-3](https://github.com/agray998/qa-assessment-example-3 "https://github.com/agray998/qa-assessment-example-3")  
+[https://github.com/agray998/python-challenges](https://github.com/agray998/python-challenges "https://github.com/agray998/python-challenges") 
+https://github.com/agray998/qa-python-assessment-1
+https://github.com/agray998/qa-python-assessment-2/
+
+
+## Day 3 Flask
+
+Flask -> a micro-framework for building web applications in Python
+Python library
+web app -> an application which offers users functionality accessed via HTTP
+the app needs to offer both:
+- business logic (own unique business logic)
+- HTTP functionality e.g. serialise/deserialise data, parsing HTTP requests, routing endpoints
+	hence framework, so we can focus on unique business logic rather than boilerplate for our HTTP requests 
+
+Django -> full fat framework, core functionality as well as additional functionality (database integration, authentication modules etc.)
+Flask -> be default you only get the core functionality (still offers additional modules however they are not built-in)
+
+why Flask? -> great for APIs, lightweight web apps
+Django -> full functionality web apps
+
+1. requirements file to include Flask module 
+```
+# requirements.txt
+flask 
+```
+2. source file such as app.py
+```Python
+# import the module you need
+from flask import Flask # all core functionality 
+
+app = Flask(__name__) # tell Flask where all the business logic can be found
+
+@app.route('/') # provide the endpoint (At least one route/endpoint)
+@app.route('/home') # decorator or higher-order function (maintains lookup table for endpoints)
+def index(): # view function for /home and /
+	return "Hello world!"
+
+if __name__ == '__main__':
+	app.run(debug=True, host='0.0.0.0', port=5000) # debug mode & listen on all addresses from web; default port for Flask is 5000
+	
+```
+- readable
+- easy to follow
+- testing
+- maintain module compatibility 
+3. testing in test_app.py
+```Python
+from app import function_a, function_b
+
+def test_functions():
+	assert function_a() == "blah blah blah"
+	assert function_b() == "sample text"
+```
+
+return values for view functions:
+- strings
+- dict / list as json objects
+- tuples if it follows a format (if you include error handling)
+	`return "Random Name Generator", 200
+cannot return:
+- int
+- float
+- bool
+	they cannot be serialised 
+
+---
+modularity convention -> application folder to include:
+	- '__init__.py' import modules and app=Flask and any modules/functions/business logic
+	- routes.py
+
+url parameters/query parameters in order to pass some info to construct an object/carry out a task
+
+url parameters -> url path 
+```Python
+@app.route('/home/<int:var>/<parameter2>') # the variable is a string by default, unless specified otherwise
+def generate(var, parameter2):
+	return xyz
+```
+
+query parameters 
+`from flask import request`
+```Python
+@app.route('/generate')
+def generate():
+	num = int(request.args.get("var", 1)) # name of the variable and no of parameters expected
+```
+
+
+## Day 4 CI/CD, Jenkins
+
+Jenkins -> automation server (also CI or build server) used to automate a variety of tasks related to building, testing, delivering and deploying software
+	these tools are allow for centralised, stable environment for building distributed development projects
+	automation servers tend to be linked to a version control systems such as Git -> it can be set up to build automatically when it identifies a new update or poll
+Jenkins is one of the most popular options as it's open source and community-driven - a lot of support and successful projects
+
+
+What does a CI server do? A continuous integration server (sometimes known as a build server) essentially **manages the shared repository and acts as a referee for the code coming in**. When developers commit to the repository, the CI server initiates a build and documents the results of the build.
+
+Jenkins:
+- open source
+- free
+- flexibility, versatility
+- extensible plugin ecosystem
+- large community, development
+
+some commands/code:
+```
+copy ssh key
+ssh -i
+sudo visudo
+sudo systemctl status jenkins
+scp -i .ssh/jenks-key-pair.pem install-jenkins-script.sh ubuntu@ec2-3-11-70-72.eu-west-2.compute.amazonaws.com
+```
+
+Jenkins project -> set of configurstions, or steps, that are used by a Job to build a piece of software. this job is repeatabke and can contain post-build actions that will take place based on the result of the job
+
+jenkins job -> a set of config , tasks to be completed on our behalf
+need to configure for each job:
+ - what steps to take to build/test code
+ - where the code is
+ - when to trigger build (what events to listen for)
+ - environment configuration (env variables, config files)
+	additionally:
+- downstream jobs 
+- what to do with workspace
+- post-build actions (steps to take after build)
+
+job types:
+- freestyle jobs (simple, not great for complex builds) shell script +some config
+- pipeline (better for complex or multi-stage build processes with unstable config)
+- other 
+
+1. create a job
+2. config the job
+3. build step: execute shell
+4. `sudo apt update && sudo apt install python3 python3-pip python3-venv -y`
+	`python3 -m venv venv`
+	`sudo chmod +x venv/bin/activate`
+	`source venv/bin/activate`
+	`pip install pytest pytest-cov`
+	`python3 -m pytest --cov --cov-report=html`
+5. post-build action: archive artifacts: htmlcov/*
+6. 
+```
+sudo apt update && sudo apt install python3 python3-pip python3-venv -y
+python3 -m venv venv
+sudo chmod +x venv/bin/activate
+./venv/bin/activate
+pip install pytest pytest-cov
+python3 -m pytest --cov --cov-report=html
+$ python -m pydoc -w application application.routes application.book application.app
+```
+![[Pasted image 20230728150913.png]]
+
+
+web hooks -> github hook trigger for GITScm polling (in build triggers)
+
+GitHub: 
+settings/webhooks/payload url (http jenkins url:8080+"/github-webhook/")
+content type: application/json
+events to trigger: just push events
+
+you need to run the first build yourself (then the webhook will pick up)
+
+
+## Day 5 CI/CI, Jenkins plugins
+
+
+plugins are there to increase the functionality of the automation server
+
+set up github credentials for private repo:
+- ssh `ssh-keyscan github.com > .ssh/known_hosts or
+- personal token + username
+
+Python plugins in Jenkins:
+- python build tools - python scripts executed as build steps
+- pyenv pipeline - virtual environment setup
+- shiningPanda 
+- cobertura - visualise test results 
+- violations - static code analysis tools
 
